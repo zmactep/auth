@@ -29,7 +29,6 @@ updateUser user = modify (select [uidSel $ uid user] usersCol) $ toBSON user
 
 checkLogin :: Login -> Password -> Action IO (Maybe User)
 checkLogin login' pass' = do let selectors = [loginSel login', passSel pass']
-                             liftIO $ print selectors
                              u <- findOne (select selectors usersCol)
                              sequence $ fromBSON <$> u
 
