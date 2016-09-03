@@ -24,17 +24,18 @@ addSession :: Session -> Action IO ()
 addSession session = void <$> insert sessionCol $ toBSON session
 
 delSession :: Session -> Action IO ()
-delSession session = do let suid  = _suid session
-                        let token = _token session
-                        let selectors = [suidSel suid, tokenSel token]
+delSession session = do let suid'  = suid session
+                        let token' = token session
+                        let selectors = [suidSel suid', tokenSel token']
                         delete (select selectors sessionCol)
 
 getSession :: Session -> Action IO (Maybe Session)
-getSession session = do let suid  = _suid session
-                        let token = _token session
-                        getSessionByIdAndToken suid token
+getSession session = do let suid'  = suid session
+                        let token' = token session
+                        getSessionByIdAndToken suid' token'
 
 getSessionByIdAndToken :: UID -> Token -> Action IO (Maybe Session)
-getSessionByIdAndToken suid token = do let selectors = [suidSel suid, tokenSel token]
-                                       s <- findOne (select selectors sessionCol)
-                                       sequence $ fromBSON <$> s
+getSessionByIdAndToken suid' token' = do
+    let selectors = [suidSel suid', tokenSel token']
+    s <- findOne (select selectors sessionCol)
+    sequence $ fromBSON <$> s

@@ -8,15 +8,11 @@ module Database.Schema
     , Bsonable (..), Default (..)
     , Login, Password, Name, Token, Title, Expires
     , UID, GID
-    , uid, login, name, password, groups
-    , gid, title
-    , suid, token, expires
     , defaultTime
     ) where
 
 import           Data.Bson.Serialization (Bsonable (..), mkBsonables)
 import           Data.Default            (Default (..))
-import           Data.Label              (mkLabels)
 import           Data.Text               (Text)
 import           Data.Time               (UTCTime (..), fromGregorian)
 
@@ -31,22 +27,22 @@ type Title    = Text
 
 type Expires  = UTCTime
 
-data User = User { _uid      :: UID
-                 , _login    :: Login
-                 , _name     :: Name
-                 , _password :: Password
-                 , _groups   :: [Integer]
+data User = User { uid      :: UID
+                 , login    :: Login
+                 , name     :: Name
+                 , password :: Password
+                 , groups   :: [Integer]
                  }
     deriving (Show, Read, Eq, Ord)
 
-data Group = Group { _gid   :: GID
-                   , _title :: Title
+data Group = Group { gid   :: GID
+                   , title :: Title
                    }
     deriving (Show, Read, Eq, Ord)
 
-data Session = Session { _suid    :: UID
-                       , _token   :: Token
-                       , _expires :: Expires
+data Session = Session { suid    :: UID
+                       , token   :: Token
+                       , expires :: Expires
                        }
     deriving (Show, Read, Eq, Ord)
 
@@ -66,4 +62,3 @@ instance Default Session where
   def = Session 0 "" def
 
 mkBsonables [''User, ''Group, ''Session]
-mkLabels [''User, ''Group, ''Session]

@@ -5,40 +5,39 @@ module Database.Schema.Methods
     , mkGroup, updateTitle
     ) where
 
-import           Data.Label      (get, modify, set)
 import           Data.List       (delete)
 import           Data.Time       (NominalDiffTime, UTCTime, addUTCTime)
 import           Database.Schema
 
 mkUser :: Login -> Password -> UID -> User
-mkUser login password uid = User { _uid = uid
-                                 , _login = login
-                                 , _password = password
-                                 , _name = ""
-                                 , _groups = []
+mkUser login password uid = User { uid = uid
+                                 , login = login
+                                 , password = password
+                                 , name = ""
+                                 , groups = []
                                  }
 
 updateLogin :: Login -> User -> User
-updateLogin = set login
+updateLogin l user = user { login = l }
 
 updateName :: Name -> User -> User
-updateName = set name
+updateName n user = user { name = n }
 
 updatePassword :: Password -> User -> User
-updatePassword = set password
+updatePassword p user = user { password = p }
 
 addGroup :: GID -> User -> User
-addGroup group user = modify groups mf user
+addGroup group user = user { groups = mf current }
     where mf = if group `elem` current then id else (group:)
-          current = get groups user
+          current = groups user
 
 rmGroup :: GID -> User -> User
-rmGroup group = modify groups (delete group)
+rmGroup group user = user { groups = delete group (groups user) }
 
 mkGroup :: Title -> GID -> Group
-mkGroup title gid = Group { _gid = gid
-                          , _title = title
+mkGroup title gid = Group { gid = gid
+                          , title = title
                           }
 
 updateTitle :: Title -> Group -> Group
-updateTitle = set title
+updateTitle t user = user { title = t }

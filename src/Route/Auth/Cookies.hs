@@ -11,14 +11,12 @@ import           Data.ByteString.Char8      (ByteString)
 import qualified Data.ByteString.Char8      as B
 import           Data.ByteString.Lazy.Char8 (toChunks)
 import           Data.Default               (Default (..))
-import           Data.Label                 (get, set)
 import           Data.Maybe                 (fromMaybe)
 import           Data.Monoid                ((<>))
 import qualified Data.Text                  as T
 import           Data.Text.Lazy             (Text)
 import           Data.Text.Lazy.Encoding    (decodeUtf8, encodeUtf8)
-import           Database.Schema            (Default (..), Session (..), UID,
-                                             expires, suid, token)
+import           Database.Schema            (Default (..), Session (..), UID)
 import           Web.Cookie
 import           Web.Scotty.Trans           (ActionT, header, setHeader)
 
@@ -33,8 +31,8 @@ setCookie = setHeader "Set-Cookie" . renderCookie . mkCookie
 
 session2value :: Session -> ByteString
 session2value s = suidBS <> "-" <> tokenBS
-    where suidBS  = B.pack $ show (get suid s)
-          tokenBS = B.pack $ T.unpack (get token s)
+    where suidBS  = B.pack $ show (suid s)
+          tokenBS = B.pack $ T.unpack (token s)
 
 readCookie :: CookiesText -> Maybe Session
 readCookie [("SID", value)] = Just $ Session suid' token' def
@@ -46,7 +44,7 @@ mkCookie :: Session -> SetCookie
 mkCookie session = def { setCookieName = "SID"
                        , setCookieValue = session2value session
                        , setCookieSecure = True
-                       , setCookieExpires = Just $ get expires session
+                       , setCookieExpires = Just $ expires session
                        }
 
 renderCookie :: SetCookie -> Text

@@ -9,8 +9,8 @@ import           Control.Monad.Trans                  (lift)
 import           Data.Text.Lazy                       (Text)
 import           Network.HTTP.Types                   (forbidden403)
 import           Network.Wai.Middleware.RequestLogger (logStdoutDev)
-import           Route.Auth                           (checkAccess, login,
-                                                       logout, whoAmI)
+import           Route.Auth                           (checkAccessR, loginR,
+                                                       logoutR, whoAmIR)
 import           ServerState                          (DBConfig (..),
                                                        ServerState, WebM,
                                                        constructState, runIO)
@@ -31,7 +31,7 @@ routes :: ScottyT Text WebM ()
 routes = do
     defaultHandler $ const $ status forbidden403 >> text "You have not be here"
     middleware logStdoutDev
-    get  "/:gid"   checkAccess
-    get  "/"       whoAmI
-    post "/login"  login
-    post "/logout" logout
+    get  "/:gid"   checkAccessR
+    get  "/"       whoAmIR
+    post "/login"  loginR
+    post "/logout" logoutR

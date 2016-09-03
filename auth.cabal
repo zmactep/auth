@@ -46,7 +46,6 @@ library
                      , resource-pool
                      , template-haskell
                      , th-lift-instances
-                     , fclabels
                      , data-default
   default-language:    Haskell2010
 

@@ -14,7 +14,7 @@ import           Web.Scotty.Trans        (ActionT, param, setHeader, status)
 
 register :: ActionT Text WebM ()
 register = do
-    login    <- param "login"    :: ActionT Text WebM Login
-    password <- param "password" :: ActionT Text WebM Password
-    let user = mkUser login password 1
+    login'    <- param "login"    :: ActionT Text WebM Login
+    password' <- param "password" :: ActionT Text WebM Password
+    let user = mkUser login' password' 1
     status created201
